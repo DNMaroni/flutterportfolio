@@ -14,7 +14,7 @@ class Constants {
 
   static const Map<String, dynamic> dados = {
     "colors": {
-      "primary": Color(0xFFFF7700),
+      "primary": Color(0xFF212327),
       "secondary": Color(0xFFFFFFF7),
       "gray1": Color(0xFF505050),
       "1": Color(0xfff0496ff),
