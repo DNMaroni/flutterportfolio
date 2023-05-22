@@ -1,5 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,11 +33,17 @@ class _HomePageState extends State<HomePage> {
     // Capture a video.
     final XFile? cameraVideo =
         await picker.pickVideo(source: ImageSource.camera);
+
+    File video = File(cameraVideo!.path);
+    await store.uploadVideo(video);
   }
 
   Future selectVideo() async {
     final XFile? galleryVideo =
         await picker.pickVideo(source: ImageSource.gallery);
+
+    File video = File(galleryVideo!.path);
+    await store.uploadVideo(video);
   }
 
   @override
@@ -194,6 +202,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 40,
+                ),
+                const Text(
+                  'Saiba mais',
+                  style: TextStyle(color: Colors.white),
+                )
               ],
             ),
           ),

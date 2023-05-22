@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../../../constants.dart';
 import '../../interfaces/client_http_service_interface.dart';
@@ -66,6 +67,32 @@ class ClientHttpServiceImplementation implements IClientHttp {
 
       post('apicentral/discord', {"mensagem": 'ERRO: $e'});
       return ({"r": "no", "data": mensagemErro});
+    }
+  }
+
+  @override
+  Future uploadFiles(String endpoint, List<File> files) async {
+    if (files.isNotEmpty) {
+      try {
+        List<MultipartFile> arrayfiles = [];
+
+        for (File f in files) {
+          arrayfiles.add(await MultipartFile.fromFile(f.path,
+              filename: f.path.split('/').last));
+        }
+
+        FormData formData = FormData.fromMap({"upload[]": arrayfiles});
+
+        dio.options.headers["contentType"] = 'multipart/form-data';
+        dio.options.headers["Authorization"] = "Bearer 123";
+
+        var response =
+            await dio.post(Constants.baseUrl + endpoint, data: formData);
+
+        return response.data['data'];
+      } catch (e) {
+        return ({'r': 'no', 'data': e.toString()});
+      }
     }
   }
 }

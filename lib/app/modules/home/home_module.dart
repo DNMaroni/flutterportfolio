@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:portfolio/app/modules/home/repositories/home_repository.dart';
 
 import 'pages/home_page.dart';
 import 'pages/home_store.dart';
@@ -11,9 +12,10 @@ class HomeModule extends Module {
     // DEPENDENCIAS
     Bind.singleton((i) => Dio()),
     Bind.singleton((i) => ClientHttpServiceImplementation(i())),
+    Bind.singleton((i) => HomeRepositoryImplementation(i())),
 
     //STORES
-    Bind.singleton((i) => HomeStore()),
+    Bind.singleton((i) => HomeStore(i())),
   ];
 
   @override

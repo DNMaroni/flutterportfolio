@@ -16,7 +16,8 @@ void main() async {
     ),
   ));
 
-  const baseUrl = String.fromEnvironment('baseUrl', defaultValue: 'minhaapi');
+  const baseUrl = String.fromEnvironment('baseUrl',
+      defaultValue: 'http://192.168.1.118:3002');
 
   Constants.baseUrl = baseUrl;
 
