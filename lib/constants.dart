@@ -17,6 +17,7 @@ class Constants {
       "primary": Color(0xFF212327),
       "secondary": Color(0xFFFFFFF7),
       "gray1": Color(0xFF505050),
+      "backgroundGrey": Color.fromARGB(255, 224, 222, 222),
       "1": Color(0xfff0496ff),
       "2": Color(0xfff19e0a3),
       "3": Color(0xfff983fff),

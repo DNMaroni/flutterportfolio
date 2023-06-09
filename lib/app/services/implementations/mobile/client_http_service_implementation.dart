@@ -89,7 +89,7 @@ class ClientHttpServiceImplementation implements IClientHttp {
         var response =
             await dio.post(Constants.baseUrl + endpoint, data: formData);
 
-        return response.data['data'];
+        return json.decode(response.data);
       } catch (e) {
         return ({'r': 'no', 'data': e.toString()});
       }

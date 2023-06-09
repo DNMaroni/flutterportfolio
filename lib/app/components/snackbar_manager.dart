@@ -39,7 +39,7 @@ class SnackBarManager {
 
   showError(BuildContext context, String message) =>
       _show(context, message, Icons.warning_amber_rounded, Colors.white,
-          background: const Color.fromARGB(255, 255, 0, 255));
+          background: Colors.red);
   showWarning(BuildContext context, String message) =>
       _show(context, message, Icons.warning_amber_rounded, Colors.red);
   showSuccess(BuildContext context, String message) =>
