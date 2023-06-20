@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../constants.dart';
 import '../../interfaces/client_http_service_interface.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ClientHttpServiceImplementation implements IClientHttp {
   final Dio dio;
@@ -71,19 +72,25 @@ class ClientHttpServiceImplementation implements IClientHttp {
   }
 
   @override
-  Future uploadFiles(String endpoint, List<File> files) async {
+  Future uploadFiles(String endpoint, List<dynamic> files) async {
     if (files.isNotEmpty) {
       try {
         List<MultipartFile> arrayfiles = [];
 
-        for (File f in files) {
-          arrayfiles.add(await MultipartFile.fromFile(f.path,
-              filename: f.path.split('/').last));
+        for (dynamic f in files) {
+          if (kIsWeb) {
+            XFile newVideo = f;
+
+            arrayfiles.add(MultipartFile.fromBytes(await newVideo.readAsBytes(),
+                filename: newVideo.name));
+          } else {
+            arrayfiles.add(await MultipartFile.fromFile(f.path,
+                filename: f.path.split('/').last));
+          }
         }
 
         FormData formData = FormData.fromMap({"upload[]": arrayfiles});
 
-        dio.options.headers["contentType"] = 'multipart/form-data';
         dio.options.headers["Authorization"] = "Bearer 123";
 
         var response =

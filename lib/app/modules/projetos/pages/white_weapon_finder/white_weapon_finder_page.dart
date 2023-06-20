@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:portfolio/app/modules/projetos/pages/white_weapon_finder/white_weapon_finder_store.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
+import '../../../../services/window_service.dart'
+    if (dart.library.html) "dart:html" as WEB;
 
 import '../../../../components/snackbar_manager.dart';
 import '../../../../components/video_component.dart';
@@ -37,60 +41,53 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
     store = Modular.get<WhiteWeaponFinderStore>();
   }
 
-  Future recordVideo() async {
+  Future getVideo(int tipo) async {
     // Capture a video.
-    final XFile? cameraVideo =
-        await picker.pickVideo(source: ImageSource.camera);
+    final XFile? cameraVideo = await picker.pickVideo(
+        source: tipo == 1 ? ImageSource.gallery : ImageSource.camera);
 
-    File video = File(cameraVideo!.path);
+    if (cameraVideo != null) {
+      dynamic video;
 
-    setState(() {
-      loading = true;
-    });
-
-    var rtn = await store.uploadVideo(video);
-
-    if (rtn['r'] == 'ok') {
-      SnackBarManager().showSuccess(context, 'Vídeo gerado com sucesso.');
+      if (kIsWeb) {
+        video = cameraVideo;
+      } else {
+        video = File(cameraVideo.path);
+      }
 
       setState(() {
-        videoready = true;
-        videoWidget = VideoComponent(rtn['data']);
+        loading = true;
       });
-    } else {
-      SnackBarManager().showError(context, rtn['data']);
-    }
 
-    setState(() {
-      loading = false;
-    });
-  }
+      var rtn = await store.uploadVideo(video);
 
-  Future selectVideo() async {
-    final XFile? galleryVideo =
-        await picker.pickVideo(source: ImageSource.gallery);
+      if (rtn['r'] == 'ok') {
+        SnackBarManager().showSuccess(context, 'Vídeo gerado com sucesso.');
 
-    File video = File(galleryVideo!.path);
+        setState(() {
+          if (!kIsWeb) {
+            videoready = true;
+            videoWidget = VideoComponent(rtn['data']);
+          } else {
+            Uint8List bytes = base64.decode(rtn['data']);
 
-    setState(() {
-      loading = true;
-    });
+            var blob = WEB.Blob([bytes], 'video/mp4', 'native');
 
-    var rtn = await store.uploadVideo(video);
-
-    if (rtn['r'] == 'ok') {
-      SnackBarManager().showSuccess(context, 'Vídeo gerado com sucesso.');
+            var anchorElement = WEB.AnchorElement(
+              href: WEB.Url.createObjectUrlFromBlob(blob).toString(),
+            )
+              ..setAttribute("download", "output.mp4")
+              ..click();
+          }
+        });
+      } else {
+        SnackBarManager().showError(context, rtn['data']);
+      }
 
       setState(() {
-        videoready = true;
-        videoWidget = VideoComponent(rtn['data']);
+        loading = false;
       });
-    } else {
-      SnackBarManager().showError(context, rtn['data']);
     }
-    setState(() {
-      loading = false;
-    });
   }
 
   @override
@@ -232,7 +229,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                           style: const ButtonStyle(
                               backgroundColor:
                                   MaterialStatePropertyAll(Colors.purple)),
-                          onPressed: selectVideo,
+                          onPressed: () => getVideo(1),
                           child: const Row(
                             children: [
                               Icon(
@@ -266,7 +263,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                           style: const ButtonStyle(
                               backgroundColor:
                                   MaterialStatePropertyAll(Colors.deepPurple)),
-                          onPressed: recordVideo,
+                          onPressed: () => getVideo(2),
                           child: const Row(
                             children: [
                               Icon(

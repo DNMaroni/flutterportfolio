@@ -1,7 +1,5 @@
 // ignore_for_file: unused_field, must_be_immutable
 
-import 'dart:io';
-
 import '../../repositories/whiteweapon_finder_repository.dart';
 
 class WhiteWeaponFinderStore {
@@ -9,7 +7,7 @@ class WhiteWeaponFinderStore {
 
   WhiteWeaponFinderStore(this._repository);
 
-  Future<Map> uploadVideo(File video) async {
+  Future<Map> uploadVideo(dynamic video) async {
     final resultado = await _repository.processVideo(video);
 
     return resultado.fold((failure) {

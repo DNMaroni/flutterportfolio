@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 
 import '../../../services/interfaces/client_http_service_interface.dart';
 import '../errors/failure.dart';
 
 abstract class IWhitweaponFinderRepository {
-  Future<Either<Failure, Map>> processVideo(File video);
+  Future<Either<Failure, Map>> processVideo(dynamic video);
 }
 
 class WhiteweaponFinderImplementation implements IWhitweaponFinderRepository {
@@ -15,9 +13,9 @@ class WhiteweaponFinderImplementation implements IWhitweaponFinderRepository {
   WhiteweaponFinderImplementation(this.clientHttp);
 
   @override
-  Future<Either<Failure, Map>> processVideo(File video) async {
+  Future<Either<Failure, Map>> processVideo(dynamic video) async {
     try {
-      List<File> files = [];
+      List<dynamic> files = [];
       files.add(video);
 
       var rtn = await clientHttp.uploadFiles('/api', files);
