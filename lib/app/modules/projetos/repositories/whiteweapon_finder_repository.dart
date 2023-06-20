@@ -23,7 +23,7 @@ class WhiteweaponFinderImplementation implements IWhitweaponFinderRepository {
       var rtn = await clientHttp.uploadFiles('/api', files);
 
       if (rtn['r'] == 'ok') {
-        return const Right({'r': 'tudo certo'});
+        return Right(rtn);
       } else {
         return const Left(ServerException('Erro ao processar o vídeo'));
       }

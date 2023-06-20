@@ -9,10 +9,11 @@ class WhiteWeaponFinderStore {
 
   WhiteWeaponFinderStore(this._repository);
 
-  Future<dynamic> uploadVideo(File video) async {
+  Future<Map> uploadVideo(File video) async {
     final resultado = await _repository.processVideo(video);
-    resultado.fold((failure) {
-      return failure.message;
+
+    return resultado.fold((failure) {
+      return {'r': 'no', 'data': failure.message};
     }, (message) {
       return message;
     });

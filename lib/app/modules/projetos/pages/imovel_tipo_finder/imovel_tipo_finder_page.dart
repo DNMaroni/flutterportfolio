@@ -93,6 +93,19 @@ class _ImovelTipoFinderPageState extends State<ImovelTipoFinderPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(
+                  height: 40,
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                      onPressed: () => Modular.to.pop(),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: Colors.white,
+                        size: 30,
+                      )),
+                ),
                 Image.asset(
                   'assets/images/house_finder.png',
                   width: 150,
@@ -245,10 +258,6 @@ class _ImovelTipoFinderPageState extends State<ImovelTipoFinderPage> {
                 const SizedBox(
                   height: 40,
                 ),
-                const Text(
-                  'Saiba mais',
-                  style: TextStyle(color: Colors.white),
-                )
               ],
             ),
           ),
