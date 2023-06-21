@@ -17,7 +17,7 @@ void main() async {
   ));
 
   const baseUrl = String.fromEnvironment('baseUrl',
-      defaultValue: 'http://danieru.laboratoriais.com.br');
+      defaultValue: 'https://danieru.laboratoriais.com.br');
 
   Constants.baseUrl = baseUrl;
 
