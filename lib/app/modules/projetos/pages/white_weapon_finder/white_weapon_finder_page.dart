@@ -34,6 +34,11 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
   bool loading = false;
   bool videoready = false;
   Widget videoWidget = Container();
+  int fpsin = 5;
+  int fpsout = 20;
+  int scale = 1;
+  int confiance = 50;
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +64,9 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
         loading = true;
       });
 
-      var rtn = await store.uploadVideo(video);
+      Map configs = {};
+
+      var rtn = await store.uploadVideo(video, configs);
 
       if (rtn['r'] == 'ok') {
         SnackBarManager().showSuccess(context, 'Vídeo gerado com sucesso.');
@@ -90,6 +97,19 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
     }
   }
 
+  List<DropdownMenuItem<int>> selectItems(int qtd) {
+    List<DropdownMenuItem<int>> items = [];
+
+    for (var i = 1; i < qtd; i++) {
+      items.add(DropdownMenuItem<int>(
+        child: Text(i.toString()),
+        value: i,
+      ));
+    }
+
+    return items;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +127,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
-                  height: 50,
+                  height: 30,
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
@@ -128,22 +148,22 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                     children: [
                       Image.asset(
                         'assets/images/knife.png',
-                        width: 150,
-                        height: 150,
+                        width: 120,
+                        height: 120,
                       ),
                       const SizedBox(
-                        height: 50,
+                        height: 30,
                       ),
                       const Text(
                         'Detector de armas brancas',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 27,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
-                        height: 50,
+                        height: 30,
                       ),
                       RichText(
                         textAlign: TextAlign.center,
@@ -155,17 +175,17 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    fontSize: 20)),
+                                    fontSize: 16)),
                             TextSpan(
                                 text:
-                                    ' Grave ou selecione um vídeo no celular;',
+                                    ' Grave ou selecione um vídeo no celular/computador;',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 20)),
                           ],
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       RichText(
                         textAlign: TextAlign.center,
@@ -177,7 +197,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    fontSize: 20)),
+                                    fontSize: 16)),
                             TextSpan(
                                 text:
                                     ' Aguarde enquanto geramos um vídeo detectando armas brancas;',
@@ -187,7 +207,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                         ),
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 15,
                       ),
                       RichText(
                         textAlign: TextAlign.center,
@@ -199,7 +219,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
-                                  fontSize: 20),
+                                  fontSize: 16),
                             ),
                             TextSpan(
                               text: ' Visualize o vídeo gerado.',
@@ -213,9 +233,147 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 40,
+                  height: 30,
                 ),
                 videoWidget,
+                Visibility(
+                  visible: !loading && !videoready,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'FPS de entrada:  ',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              SizedBox(
+                                height: 40,
+                                child: DropdownButton<int>(
+                                  value: fpsin,
+                                  icon: null,
+                                  elevation: 16,
+                                  style: const TextStyle(color: Colors.purple),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.purple,
+                                  ),
+                                  onChanged: (int? value) {
+                                    // This is called when the user selects an item.
+                                    setState(() {
+                                      fpsin = value!;
+                                    });
+                                  },
+                                  items: selectItems(30),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 25,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'FPS de saída:  ',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              SizedBox(
+                                height: 40,
+                                child: DropdownButton<int>(
+                                  value: fpsout,
+                                  icon: null,
+                                  elevation: 16,
+                                  style: const TextStyle(color: Colors.purple),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.purple,
+                                  ),
+                                  onChanged: (int? value) {
+                                    // This is called when the user selects an item.
+                                    setState(() {
+                                      fpsout = value!;
+                                    });
+                                  },
+                                  items: selectItems(30),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Escala de saída:  ',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              SizedBox(
+                                height: 40,
+                                child: DropdownButton<int>(
+                                  value: scale,
+                                  icon: null,
+                                  elevation: 16,
+                                  style: const TextStyle(color: Colors.purple),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.purple,
+                                  ),
+                                  onChanged: (int? value) {
+                                    // This is called when the user selects an item.
+                                    setState(() {
+                                      scale = value!;
+                                    });
+                                  },
+                                  items: selectItems(5),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 25,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'Confiança mínima:  ',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              SizedBox(
+                                height: 40,
+                                child: DropdownButton<int>(
+                                  value: confiance,
+                                  icon: null,
+                                  elevation: 16,
+                                  style: const TextStyle(color: Colors.purple),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.purple,
+                                  ),
+                                  onChanged: (int? value) {
+                                    // This is called when the user selects an item.
+                                    setState(() {
+                                      confiance = value!;
+                                    });
+                                  },
+                                  items: selectItems(100),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 Visibility(
                     visible: loading,
                     child: const CircularProgressIndicator.adaptive()),
@@ -235,6 +393,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                               Icon(
                                 Icons.video_collection,
                                 color: Colors.white,
+                                size: 17,
                               ),
                               SizedBox(
                                 width: 10,
@@ -269,6 +428,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                               Icon(
                                 Icons.video_camera_back_rounded,
                                 color: Colors.white,
+                                size: 17,
                               ),
                               SizedBox(
                                 width: 10,
