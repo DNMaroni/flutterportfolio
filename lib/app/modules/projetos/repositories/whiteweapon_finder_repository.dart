@@ -4,7 +4,8 @@ import '../../../services/interfaces/client_http_service_interface.dart';
 import '../errors/failure.dart';
 
 abstract class IWhitweaponFinderRepository {
-  Future<Either<Failure, Map>> processVideo(dynamic video);
+  Future<Either<Failure, Map>> processVideo(
+      dynamic video, Map<String, dynamic> filters);
 }
 
 class WhiteweaponFinderImplementation implements IWhitweaponFinderRepository {
@@ -13,12 +14,13 @@ class WhiteweaponFinderImplementation implements IWhitweaponFinderRepository {
   WhiteweaponFinderImplementation(this.clientHttp);
 
   @override
-  Future<Either<Failure, Map>> processVideo(dynamic video) async {
+  Future<Either<Failure, Map>> processVideo(
+      dynamic video, Map<String, dynamic> filters) async {
     try {
       List<dynamic> files = [];
       files.add(video);
 
-      var rtn = await clientHttp.uploadFiles('/api', files);
+      var rtn = await clientHttp.uploadFiles('/api', files, data: filters);
 
       if (rtn['r'] == 'ok') {
         return Right(rtn);

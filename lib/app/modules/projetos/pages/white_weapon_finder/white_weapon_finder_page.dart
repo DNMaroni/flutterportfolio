@@ -37,7 +37,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
   int fpsin = 5;
   int fpsout = 20;
   int scale = 1;
-  int confiance = 50;
+  int confidence = 50;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
     store = Modular.get<WhiteWeaponFinderStore>();
   }
 
-  Future getVideo(int tipo) async {
+  Future getVideo(int tipo, context) async {
     // Capture a video.
     final XFile? cameraVideo = await picker.pickVideo(
         source: tipo == 1 ? ImageSource.gallery : ImageSource.camera);
@@ -64,7 +64,12 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
         loading = true;
       });
 
-      Map configs = {};
+      Map<String, dynamic> configs = {
+        'fpsin': fpsin,
+        'fpsout': fpsout,
+        'scale': scale,
+        'confidence': confidence
+      };
 
       var rtn = await store.uploadVideo(video, configs);
 
@@ -100,10 +105,10 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
   List<DropdownMenuItem<int>> selectItems(int qtd) {
     List<DropdownMenuItem<int>> items = [];
 
-    for (var i = 1; i < qtd; i++) {
+    for (var i = 1; i <= qtd; i++) {
       items.add(DropdownMenuItem<int>(
-        child: Text(i.toString()),
         value: i,
+        child: Text(i.toString()),
       ));
     }
 
@@ -245,7 +250,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                         children: [
                           Row(
                             children: [
-                              Text(
+                              const Text(
                                 'FPS de entrada:  ',
                                 style: TextStyle(color: Colors.white),
                               ),
@@ -266,17 +271,17 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                                       fpsin = value!;
                                     });
                                   },
-                                  items: selectItems(30),
+                                  items: selectItems(60),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 25,
                           ),
                           Row(
                             children: [
-                              Text(
+                              const Text(
                                 'FPS de saída:  ',
                                 style: TextStyle(color: Colors.white),
                               ),
@@ -297,7 +302,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                                       fpsout = value!;
                                     });
                                   },
-                                  items: selectItems(30),
+                                  items: selectItems(60),
                                 ),
                               ),
                             ],
@@ -309,7 +314,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                         children: [
                           Row(
                             children: [
-                              Text(
+                              const Text(
                                 'Escala de saída:  ',
                                 style: TextStyle(color: Colors.white),
                               ),
@@ -335,19 +340,17 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                            width: 25,
-                          ),
+                          const SizedBox(width: 20),
                           Row(
                             children: [
-                              Text(
-                                'Confiança mínima:  ',
+                              const Text(
+                                'Confiança min.:  ',
                                 style: TextStyle(color: Colors.white),
                               ),
                               SizedBox(
                                 height: 40,
                                 child: DropdownButton<int>(
-                                  value: confiance,
+                                  value: confidence,
                                   icon: null,
                                   elevation: 16,
                                   style: const TextStyle(color: Colors.purple),
@@ -358,7 +361,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                                   onChanged: (int? value) {
                                     // This is called when the user selects an item.
                                     setState(() {
-                                      confiance = value!;
+                                      confidence = value!;
                                     });
                                   },
                                   items: selectItems(100),
@@ -387,7 +390,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                           style: const ButtonStyle(
                               backgroundColor:
                                   MaterialStatePropertyAll(Colors.purple)),
-                          onPressed: () => getVideo(1),
+                          onPressed: () => getVideo(1, context),
                           child: const Row(
                             children: [
                               Icon(
@@ -422,7 +425,7 @@ class _WhiteWeaponFinderPageState extends State<WhiteWeaponFinderPage> {
                           style: const ButtonStyle(
                               backgroundColor:
                                   MaterialStatePropertyAll(Colors.deepPurple)),
-                          onPressed: () => getVideo(2),
+                          onPressed: () => getVideo(2, context),
                           child: const Row(
                             children: [
                               Icon(

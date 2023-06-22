@@ -72,7 +72,8 @@ class ClientHttpServiceImplementation implements IClientHttp {
   }
 
   @override
-  Future uploadFiles(String endpoint, List<dynamic> files) async {
+  Future uploadFiles(String endpoint, List<dynamic> files,
+      {Map<String, dynamic>? data}) async {
     if (files.isNotEmpty) {
       try {
         List<MultipartFile> arrayfiles = [];
@@ -89,7 +90,13 @@ class ClientHttpServiceImplementation implements IClientHttp {
           }
         }
 
-        FormData formData = FormData.fromMap({"upload[]": arrayfiles});
+        Map<String, dynamic> requestData = {"upload[]": arrayfiles};
+
+        if (data != null) {
+          requestData.addAll(data);
+        }
+
+        FormData formData = FormData.fromMap(requestData);
 
         dio.options.headers["Authorization"] = "Bearer 123";
 

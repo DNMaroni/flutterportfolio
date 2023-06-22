@@ -7,8 +7,8 @@ class WhiteWeaponFinderStore {
 
   WhiteWeaponFinderStore(this._repository);
 
-  Future<Map> uploadVideo(dynamic video) async {
-    final resultado = await _repository.processVideo(video);
+  Future<Map> uploadVideo(dynamic video, Map<String, dynamic> filters) async {
+    final resultado = await _repository.processVideo(video, filters);
 
     return resultado.fold((failure) {
       return {'r': 'no', 'data': failure.message};
